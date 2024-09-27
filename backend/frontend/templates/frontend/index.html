@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sum Calculator</title>
+</head>
+<body>
+    <h1>Sum Calculator</h1>
+    <form id="sum-form">
+        <label for="numbers">Enter numbers (comma-separated):</label>
+        <input type="text" id="numbers" name="numbers">
+        <button type="submit">Calculate</button>
+    </form>
+    <h3>Sum: <span id="sum-result"></span></h3>
+
+    <script>
+        document.getElementById('sum-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const numbers = document.getElementById('numbers').value.split(',').map(Number);
+            fetch('/api/calculate/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ 'numbers': numbers })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('sum-result').textContent = data.sum;
+            });
+        });
+    </script>
+</body>
+</html>
+
